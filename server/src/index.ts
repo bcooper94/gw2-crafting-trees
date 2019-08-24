@@ -1,7 +1,7 @@
-const express = require('express');
-const cors = require('cors');
+import express = require('express');
+import cors = require('cors');
 
-const app = express();
+const app: express.Application = express();
 const port = process.env.PORT;
 
 const ItemService = require('./service/item-service');
@@ -12,7 +12,7 @@ const recipeService = new RecipeService();
 
 app.use(cors());
 
-app.get('/items', async (req, res) => {
+app.get('/items', async (_, res) => {
     try {
         const itemIds = await itemService.getItemIds();
         res.status(200).send(itemIds);
@@ -33,8 +33,10 @@ app.get('/items/:itemId', async (req, res) => {
 });
 
 app.get('/recipes/:recipeId', async (req, res) => {
+    const recipeId = req.params.recipeId;
+
     try {
-        const recipe = await recipeService.getRecipe(req.params.recipeId);
+        const recipe = await recipeService.getRecipe(recipeId);
         res.status(200).send(recipe.toJson());
     } catch (ex) {
         res.status(500).send(`Failed to retrieve recipe for recipeId=${recipeId}`);
